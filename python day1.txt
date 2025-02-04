@@ -1,0 +1,193 @@
+*****************
+
+print("Hello World")
+
+*****************
+
+num1=10
+num2=20
+num3=num1+num2
+
+print(num3)
+
+num1="infy"
+print(num1)
+print(type(num1))
+
+num1=10.5
+print(num1)
+print(type(num1))
+
+*****************
+
+num1=int(input("Enter the value for num1: "))
+num2=int(input("Enter the value for num2: "))
+
+num3=num1+num2
+print(num3)
+
+
+******************
+
+converting string to int -- int(string_val)
+converting int to string -- str(int_val)
+
+******************
+
+commenting - #this is a single line comment#
+commenting - """this is multi line comment"""
+commenting - '''this is multi line comment'''
+
+******************
+
+a=10
+b=20.23467
+c="infosys"
+d=100
+
+print("%d" %a)
+print("%10d" %d) #spaces at beginning#
+print("%-10d" %d) #spaces at end#
+print("%s" %c)
+print("%55s" %c) #given spaces less than length it override and if length extra that many will have spaces - left justified#
+print("%-30s" %c) #given spaces less than length it override and if length extra that many will have spaces - right justified#
+
+print("%d" %b)
+print("%0.2f" %b) #rounding off#
+
+
+******************
+
+num=int(input("enter the value for num: "))
+
+if (num>0):
+	print("num is positive")
+elif (num<0):
+	print("num is negative")
+else:
+	print("num is zero")
+
+
+******************
+
+num=5
+i=1
+
+while (i<=num):
+	print(i)
+	i+=1
+
+
+for i in 1,2,3,4,5:
+	print(i)
+
+for i in range(1,6): #end value is  ignored, only till before value executes#
+	print(i)
+
+for i in range(1,6,2):  #step count in 3rd parameter#
+	print(i)
+
+for i in range(11,6,-1): #11,10,.. and at last 6 is ignored#
+	print(i)
+
+for i in range(1,6):
+	if (i%2==0):
+		continue
+	if (i%5==0):
+		break
+	print(i)
+
+
+******************
+
+def sample(): #function definition#
+	print("sample called")
+
+sample() #function call#
+
+def add(num1,num2):
+	s=num1+num2
+	return s
+
+res=add(10,20)
+print(res)
+
+
+def add1():
+	num1=100
+	num2=200
+	s=num1+num2
+	return s
+
+res1=add1()
+print(res1)
+
+***************************
+
+null is stated as 'None' in python
+
+***************************
+
+def swap(num1,num2):
+	temp=num1
+	num1=num2
+	num2=temp
+	return num1,num2
+
+x=10
+y=20
+print(x,y)
+res=swap(x,y)
+print(res)
+
+***************************
+
+def change(l1):
+	l1[1]=200
+	print(l1)
+
+l=[10,20,30]
+print(l)
+change(l)
+print(l)
+
+
+***************************
+
+python by default follows pass by reference
+
+
+***************************
+
+def add(a,b):
+	print(a,b,sep="#",end=":") #provided the separator and end#
+	return a+b
+
+print(add(10,20))
+print("Hello")
+
+***************************
+
+def add(name,dept,sal):
+	print("name: ",name)
+	print("dept: ",dept)
+	print("salary: ",sal)
+
+add("Prashant","SE",16758)
+add(sal=16758,dept="SE",name="Prashant") #keyword arguments, but positional arguments are checked first#
+
+
+def add1(x,*a): #to have default 1 parameter after x we used *a#
+	print(x,a)
+
+#add1() will throw error#
+add1(10)
+add1(10,20)
+add1(10,20,30)
+
+***************************
+
+positional,keyword,default,variable number of arguments are being discussed
+
+***************************
+

@@ -1,0 +1,313 @@
+#List
+emp=['1368273','prashant','SE',16758.99,9848382898]
+print(emp)
+print(type(emp))
+print(len(emp))
+
+print(emp[2])
+
+emp[2]="BI"
+print(emp)
+
+for i in emp:
+	print (i)
+
+for i in range(len(emp)):
+	print (emp[i])
+
+
+****************************
+
+#tuple
+t=(10,20,30,40,50)
+print(t)
+print(type(t))
+print(len(t))
+
+for i in t:
+	print (i)
+
+for i in range(len(t)):
+	print(t[i])
+
+
+****************************
+
+l1=[10,20,30]
+l2=[40,50]
+
+print(id(l1))  #unique identifier allocated for l1
+
+#l1=l1+l2 #this will create new list of l1
+#print(l1)
+
+l1+=l2 #this shorthand will add elements to the existing list l1 - we can check with id(l1)
+print(l1)
+
+
+****************************
+
+t1=(10,20,30)
+t2=(40,50)
+
+print(id(t1))
+t1=t1+t2
+
+print(t1)
+print(id(t1))
+
+t1+=t2
+
+print(t1)
+print(id(t1))
+
+""""Still both methods will create a new tuple because tuple is immutable"""
+
+
+****************************
+
+
+def change(l):
+	#l=l+[40,50]
+	l+=[40,50]
+	print(l)
+
+l1=[10,20,30]
+print(l1)
+print(id(l1))
+change(l1)
+print(id(l1))
+print(l1)
+print(id(l1))
+
+
+****************************
+
+l=[10,20,30,40,50]
+
+print(l)
+print(l[-2]) #negative indexing to access elements from last
+
+print(l[2:4])
+print(l[1:4:2])
+print(l[:3])
+print(l[3:])
+print(l[:])
+print(l[4:2])
+
+print(l[4:2:-1])
+print(l[2:4:-1])
+print(l[::-1])
+print(l[-3:])
+print(l[-3::-1])
+
+
+****************************
+
+
+#String
+st="Infosys\n"
+st1='Mysore\n'
+
+print(st)
+print(type(st))
+print(len(st))
+
+print(st[3])
+
+for i in st:
+	print(i)
+
+for i in range(len(st)):
+	print(st[i])
+
+st=st+st1
+print(st)
+
+
+************************
+
+
+#set
+s1={'a','b',1,2,'c',3,4,'a','b',1,2,5,'x','z','y'}
+
+print(s1)
+
+for i in s1:
+	print(i)
+
+************************
+
+s1={10,20,30,40,50}
+s2={40,50,60,70}
+
+print(s1&s2) #intersection
+print(s1|s2)#union
+print(s1-s2) #symetric difference
+
+
+l=[10,20,50,30,40,30,20,10]
+print(l)
+print(list(set(l)))
+
+
+************************
+
+
+#dictionary
+d={'a':'apple','b':'ball','c':'cat'}
+
+print(d)
+print(type(d))
+print(d['a'])
+d['a']='ant'
+d['d']='doll'
+print(d)
+
+for i in d:
+	print(i,d[i],sep=':')
+
+
+************************
+
+l=[]
+print(l)
+print(len(l))
+l=[None]*5
+print(l)
+#we can add elements now as we have n null values with help of indexing now
+
+
+************************
+
+import random
+
+print(random.random)
+print(random.randrange(1,11,2))
+l=[10,20,30,40,50]
+print(random.choice(l))
+
+*************************
+
+
+from math import *
+
+print(fabs(-10)) #absolute value of given number
+print(sqrt(25))
+print(factorial(5))
+print(floor(10.9))
+print(ceil(10.01))
+print(pow(2,4))
+
+
+*************************
+
+l=[10,20,30,40,50]
+
+print(l)
+l.append(60)
+print(l)
+
+l.insert(2,25)
+print(l)
+
+l.insert(10,55)
+print(l)
+
+l.insert(-10,5)
+print(l)
+
+l.pop()
+print(l)
+
+l.pop(4)
+print(l)
+
+l.remove(40)
+print(l)
+l.append(10)
+
+print(l.count(10))
+print(l.index(10,2)) #started searching from second index that is mentioned in the second argument and also stop can be specified in the third argument
+
+
+l.sort()
+print(l)
+
+l.sort(reverse=True)
+print(l)
+
+
+*************************
+
+
+st="infosys"
+
+print(st)
+
+
+print(st.find("inf"))
+print(st.find("sys"))
+print(st.find("abc"))
+
+print(st.find('s',5))
+print(st.index('s',5)) #if given is not present it will throw error so better to use find
+print(st.replace('s','S',1)) #at last argument we can give range of how many occurences should be changed
+print(st)
+
+print(st.lower())
+print(st.upper())
+
+print(st.startswith("inf"))
+print(st.startswith("infa"))
+
+print(st.endswith("sys"))
+print(st.endswith("sysa"))
+
+print(st.isalpha())
+print(st.isalnum()) #checks alphabets and numbers
+print(st.isdigit()) #checks numbers
+
+
+************************
+
+st="i love python"
+print(st.split())
+
+st1="i:love:python"
+print(st1.split(':'))
+
+**********************
+
+#stripping in strings
+
+for leading r and for trailing l
+st.rstrip()
+st.lstrip()
+
+
+**********************
+
+#dictionary
+d={'a':'apple','b':'ball','c':'cat'}
+
+print(d)
+print(d['b'])
+print(d.get('b'))
+print(d.update({'a':'ant','d':'doll'}))
+print(d)
+
+
+for i in d.keys():
+	print(i)
+
+for i in d.values():
+	print(i)
+
+for i,j in d.items():
+	print(i,j,sep=':')
+
+
+**********************
+
+

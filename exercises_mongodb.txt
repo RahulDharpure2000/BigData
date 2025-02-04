@@ -1,0 +1,873 @@
+DATABASE AND COLLECTIONS EXERCISE::
+
+EXERCISE-1::
+
+Create a database and collection for ConnectMe
+Problem Statement
+ConnectMe is a new social media application.
+
+They have decided to use MongoDB to maintain their users' profiles, since they want to provide their users with the flexibility to decide how much personal information they want to share. 
+
+Do the following steps:
+Create a database called ConnectMeDB 
+Create a collection for storing their users' details called user_profiles
+Expected Output:
+1. On running the command db the output should be ConnectMeDB
+
+The following image shows that on running of the command db the output is displayed as ConnectMeDB
+
+2. The result of creating a collection should be successful
+
+The following image shows the result of creating a collection.
+
+
+
+:::::::::::::::::::::::::::OUTPUT:::::::::::::::::::::::::::
+
+use ConnectMeDB
+switched to db ConnectMeDB
+db.createCollection('user_profiles')
+{ ok: 1 }
+show collections
+user_profiles
+
+*********************************************************************************************
+
+EXERCISE-2::
+
+Eat, Fit and Food - Database and Collections
+Problem Statement
+Eat, Fit and Food is an online restaurants agency based in Paris and they want to automate the process of ordering food items sold in their restaurants for which they want to design the database using MongoDB.
+
+For this, they want to first create the required database and collections. Implement the following to achieve the requirement.
+
+1. Create two databases with the names RestaurantsDB and SnackbarDB
+
+2. Create two collections with the names restaurants and snacks in RestaurantsDB and SnackbarDB respectively.
+
+3. Display the list of the databases created.
+
+4. Display the list of collections in RestaurantsDB and SnackbarDB
+
+5. Remove the collection snacks from SnackbarDB
+
+6. Remove the Database SnackbarDB
+
+
+:::::::::::::::::::::::::::OUTPUT:::::::::::::::::::::::::::
+
+
+use RestaurantsDB
+switched to db RestaurantsDB
+use SnackbarDB
+switched to db SnackbarDB
+db.createCollection('snacks')
+{ ok: 1 }
+use RestaurantsDB
+switched to db RestaurantsDB
+db.createCollection('restaurants')
+{ ok: 1 }
+show databases
+ConnectMeDB     8.00 KiB
+RestaurantsDB   8.00 KiB
+SnackbarDB      8.00 KiB
+admin          40.00 KiB
+config         92.00 KiB
+local          40.00 KiB
+show collections
+restaurants
+use SnackbarDB
+switched to db SnackbarDB
+show collections
+snacks
+db.snacks.drop()
+true
+db.dropDatabase()
+{ ok: 1, dropped: 'SnackbarDB' }
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+INSERT OPERATIONS EXERCISE::
+
+EXERCISE-1:: Create and insert ConnectMe user profiles
+
+:::::::::::::::::::::::::::OUTPUT:::::::::::::::::::::::::::
+
+use ConnectMeDB
+switched to db ConnectMeDB
+show collections
+user_profiles
+
+db.user_profiles.insertMany([
+  {UserId: "amy01",Name: "Amy James", Gender: "Female", Location: "India", Age:19, University: "Delhi University"},
+  {UserId: "jimmy999", Name: "Jim Watson", From: "Canada", Location: "Mexico", Office: "Google"},
+  {UserId: "rachel_11", Name: "Rachel Greene", Location: "New York", PhoneNo: 123456789, University: "Vassar University", Graduated: 2014}
+]
+)
+
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('676a5f92942d6a92ee8b3c1b'),
+    '1': ObjectId('676a5f92942d6a92ee8b3c1c'),
+    '2': ObjectId('676a5f92942d6a92ee8b3c1d')
+  }
+}
+
+db.user_profiles.find().pretty()
+
+{
+  _id: ObjectId('676a5f92942d6a92ee8b3c1b'),
+  UserId: 'amy01',
+  Name: 'Amy James',
+  Gender: 'Female',
+  Location: 'India',
+  Age: 19,
+  University: 'Delhi University'
+}
+{
+  _id: ObjectId('676a5f92942d6a92ee8b3c1c'),
+  UserId: 'jimmy999',
+  Name: 'Jim Watson',
+  From: 'Canada',
+  Location: 'Mexico',
+  Office: 'Google'
+}
+
+  _id: ObjectId('676a5f92942d6a92ee8b3c1d'),
+  UserId: 'rachel_11',
+  Name: 'Rachel Greene',
+  Location: 'New York',
+  PhoneNo: 123456789,
+  University: 'Vassar University',
+  Graduated: 2014
+}
+
+*********************************************************************************************
+
+EXERCISE-2:: Eat, Fit and Food - Insert Operation
+
+
+:::::::::::::::::::::::::::OUTPUT:::::::::::::::::::::::::::
+
+
+
+db.restaurants.insertOne(
+{
+InsertOperation_1.txt
+}
+)
+
+
+{
+  acknowledged: true,
+  insertedId: ObjectId('676a61ea942d6a92ee8b3c1e')
+}
+
+db.restaurants.insertMany(
+[
+{
+InsertOperation_2.txt
+}
+]
+)
+
+
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('676a622e942d6a92ee8b3c1f'),
+    '1': ObjectId('676a622e942d6a92ee8b3c20'),
+    '2': ObjectId('676a622e942d6a92ee8b3c21'),
+    '3': ObjectId('676a622e942d6a92ee8b3c22')
+  }
+
+
+*********************************************************************************************
+
+EXERCISE-3:: Create database, collection and documents for WordLinks
+
+:::::::::::::::::::::::::::OUTPUT:::::::::::::::::::::::::::
+
+
+Problem Statement:
+WordLinks, a bookstore, wants to maintain their vast inventory of books in MongoDB.
+
+-Create a database and collection for WordLinks to store their inventory. 
+-Create documents to represent their attributes and store it in the collection created.
+Some of the books are described below:
+
+1. The Theory of Everything - Stephen Hawking.
+
+-This book has 2 binding options: Hardback and paperback.
+-The publisher is Jaico and it was published in 2006. 
+-There are 5 copies of paperback and 19 copies of hardback are available in stock. It costs 300 for the paperback and 1200 for the hardback variants, respectively.
+-It is classified under physics, science, astrophysics, universe.
+ 2. The Origin of Species - Charles Darwin.
+
+-This book has only hardback binding and it retails for 800.
+-There are 10 copies in stock and it has ISBN 0451529065.
+-The book is classified under biology, life sciences, evolution, science.
+ 3. The Magic of Reality - Richard Dawkins.
+
+-This book has both hardback and paperback binding options and there are 12 copies of each in stock. 
+-The retail price of paperback is 300, and the hardback costs 1350.
+-The publisher is RHUK. 
+-The book is classified under society, social sciences, science, culture.
+ 4. Human Universe - Brian Cox, Andrew Cohen.
+
+-This book has 3 variants- hardback at 1400, paperback at 400 and the e-book at 300. There are 10 copies of the hardback and 16 copies of the paperback.
+-The publisher is William Collins and the book was printed in 2015.
+-The description of the book is - "This book asks questions about our origins, our destiny and our place in the universe."
+-It is classified under earth sciences, astrophysics, science, evolution. 
+Expected Output:
+-The documents must have all the attributes available and stored in appropriate data types.
+-The field values must contain embedded documents, arrays, strings, or numbers wherever appropriate.
+-The result of every insert operation should be successful either for single insertion or multiple insertion, i.e. “acknowledged:true” along with the insertedIds
+-You can use db.your_collection_name.find().pretty() to view the documents you have inserted.
+-The above query should display 4 documents that represent all the given details of the books.
+
+
+
+:::::::::::::::::::::::::::OUTPUT:::::::::::::::::::::::::::
+
+
+use WordLinks
+switched to db WordLinks
+show collections
+books
+
+db.books.insertOne({bookname: "The Theory of Everything", author: "Stephen Hawking", binding_options: ["Hardback","Paperback"], publisher_name: "Jaico", published_year: 2006, stock_availability: [{Hardback:5},{Paperback:19}], price: [{Hardback:1200},{Paperback:300}], classification: ["Physics","Science","Astrophysics","Universe"]})
+
+{
+  acknowledged: true,
+  insertedId: ObjectId('676a9d5c2d86dbdbc0d6ca9c')
+}
+
+db.books.insertOne({bookname: "The Origin of Species", author: "Charles Darwin", binding_options: ["Hardback"], stock_availability: [10], ISBN: 0451529065, classification: ["Biology","Life Sciences","Evolution","Science"]})
+
+{
+  acknowledged: true,
+  insertedId: ObjectId('676a9ead2d86dbdbc0d6ca9d')
+}
+
+db.books.insertOne({bookname: "The Magic of Reality", author: "Richard Dawkins", binding_options: ["Hardback","Paperback"], publisher_name: "RHUK", stock_availability: [{Hardback:12},{Paperback:12}], price: [{Hardback:300},{Paperback:1350}], classification: ["Society","Social Sciences","Science","Culture"]})
+
+
+{
+  acknowledged: true,
+  insertedId: ObjectId('676aa0102d86dbdbc0d6ca9e')
+}
+
+
+db.books.insertOne({bookname: "Human Universe", author: ["Brian Cox", "Andrew Cohen"], binding_options: ["Hardback","Paperback", "e-book"], publisher_name: "William Collins", published_year: 2015, stock_availability: [{Hardback:1400},{Paperback:400},{"e-book":300}], description: "This book asks questions about our origins, our destiny and our place in the universe.", classification: ["Sciences","Astrophysics","Science","Evolution"]})
+
+
+{
+  acknowledged: true,
+  insertedId: ObjectId('676aa2542d86dbdbc0d6ca9f')
+}
+
+
+db.books.find().pretty()
+
+
+{
+  _id: ObjectId('676a9d5c2d86dbdbc0d6ca9c'),
+  bookname: 'The Theory of Everything',
+  author: 'Stephen Hawking',
+  binding_options: [
+    'Hardback',
+    'Paperback'
+  ],
+  publisher_name: 'Jaico',
+  published_year: 2006,
+  stock_availability: [
+    {
+      Hardback: 5
+    },
+    {
+      Paperback: 19
+    }
+  ],
+  price: [
+    {
+      Hardback: 1200
+    },
+    {
+      Paperback: 300
+    }
+  ],
+  classification: [
+    'Physics',
+    'Science',
+    'Astrophysics',
+    'Universe'
+  ]
+}
+
+{
+  _id: ObjectId('676a9ead2d86dbdbc0d6ca9d'),
+  bookname: 'The Origin of Species',
+  author: 'Charles Darwin',
+  binding_options: [
+    'Hardback'
+  ],
+  stock_availability: [
+    10
+  ],
+  ISBN: 451529065,
+  classification: [
+    'Biology',
+    'Life Sciences',
+    'Evolution',
+    'Science'
+  ]
+}
+
+{
+  _id: ObjectId('676aa0102d86dbdbc0d6ca9e'),
+  bookname: 'The Magic of Reality',
+  author: 'Richard Dawkins',
+  binding_options: [
+    'Hardback',
+    'Paperback'
+  ],
+  publisher_name: 'RHUK',
+  stock_availability: [
+    {
+      Hardback: 12
+    },
+    {
+      Paperback: 12
+    }
+  ],
+  price: [
+    {
+      Hardback: 300
+    },
+    {
+      Paperback: 1350
+    }
+  ],
+  classification: [
+    'Society',
+    'Social Sciences',
+    'Science',
+    'Culture'
+  ]
+}
+
+{
+  _id: ObjectId('676aa2542d86dbdbc0d6ca9f'),
+  bookname: 'Human Universe',
+  author: [
+    'Brian Cox',
+    'Andrew Cohen'
+  ],
+  binding_options: [
+    'Hardback',
+    'Paperback',
+    'e-book'
+  ],
+  publisher_name: 'William Collins',
+  published_year: 2015,
+  stock_availability: [
+    {
+      Hardback: 1400
+    },
+    {
+      Paperback: 400
+    },
+    {
+      'e-book': 300
+    }
+  ],
+  description: 'This book asks questions about our origins, our destiny and our place in the universe.',
+  classification: [
+    'Sciences',
+    'Astrophysics',
+    'Science',
+    'Evolution'
+  ]
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+READ OPERATIONS EXERCISE::
+
+EXERCISE-1::
+Retrieving ConnectMe user profiles
+Problem Statement:
+You have already created some user profile documents in the ConnectMe database.
+
+Now retrieve documents of those people whose profiles meet the following criteria:
+
+The location is ‘New York’
+Graduated between the years 2013 - 2015 (both inclusive)
+Display only the names and UserId of the profiles returned.
+You can choose your method of implementation for this exercise. There are several methods to achieve the same functionality. 
+
+
+:::::::::::::::::::::::::::OUTPUT:::::::::::::::::::::::::::
+
+
+
+db.user_profiles.find({$and:[{Location:'New York'},
+{Graduated: {$gte:2013,$lte:2015}}]},{_id:0,UserId:1,Name:1})
+
+{
+  UserId: 'rachel_11',
+  Name: 'Rachel Greene'
+}
+
+
+*********************************************************************************************
+
+
+EXERCISE-2:: Eat, Fit and Food - Read Operation
+
+Problem Statement:
+Eat, Fit and Food is happy to see the restaurants getting added to their inventory. Now they want us to write some queries to fetch the data based on the given requirements.
+
+1. Write a query to fetch only the restaurant names from the restaurants collection 
+
+db.restaurants.find({},{_id:0,restaurantName:1})
+
+
+2. Write a query to display all the details of the restaurants
+
+db.restaurants.find({},{_id:0})
+
+
+3. Write a query to display all the details of restaurant with restaurantId R002
+
+db.restaurants.find({restaurantId:'R002'}).pretty()
+
+4. Write a query to display the names of only those restaurants where Italian cuisine is served.
+
+db.restaurants.find({"cuisineDetails.cuisineType": 'Italian'},{restaurantName:1,_id:0})
+
+5. Write a query to display the name and capacity of those restaurants whose capacity is more than 50
+
+db.restaurants.find({capacity:{$gt:50}},{_id:0,restaurantName:1,capacity:1}).pretty()
+
+6. Write a query to display the restaurantId of the restaurants which operate in the state of Assam
+
+db.restaurants.find({"location.state":'Assam'},{_id:0,restaurantId:1})
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+UPDATE OPERATION EXERCISES::
+
+EXERCISE-1::
+
+You have already seen how to retrieve user profiles in the previous exercise.
+
+Now, some users want to update their profiles to include the following details.
+
+        UserId         	                            Siblings                         	         University	 Age
+        amy01      	Luke James, Anna James, Sharon James	   Anna University    	  21
+         UserId	             University              	   Age  	       Favourite Football Team     
+      jimmy999      	    University of Colorado	    42	        Manchester United F.C
+Perform the update operations using appropriate operators, if required.
+
+
+:::::::::::::::::::::::::::OUTPUT:::::::::::::::::::::::::::
+
+
+
+db.user_profiles.updateOne(
+  {UserId: 'amy01'},
+  {$set:{Siblings:['Luke James', 'Anna James', 'Sharon James'],
+         University: 'Anna University',
+          Age: 21}}
+)
+
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+db.user_profiles.updateOne(
+  {UserId: 'jimmy999'},
+  {$set:{
+         University: 'University of Colorado',
+          Age: 42,
+"Favourite Football Team":' Manchester United F.C'
+}})
+
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+db.user_profiles.find().pretty()
+
+{
+  _id: ObjectId('676a5f92942d6a92ee8b3c1b'),
+  UserId: 'amy01',
+  Name: 'Amy James',
+  Gender: 'Female',
+  Location: 'India',
+  Age: 21,
+  University: 'Anna University',
+  Siblings: [
+    'Luke James',
+    'Anna James',
+    'Sharon James'
+  ]
+}
+
+{
+  _id: ObjectId('676a5f92942d6a92ee8b3c1c'),
+  UserId: 'jimmy999',
+  Name: 'Jim Watson',
+  From: 'Canada',
+  Location: 'Mexico',
+  Office: 'Google',
+  Age: 21,
+  'Favourite Football Team': ' Manchester United F.C',
+  University: 'University of Colorado'
+}
+
+{
+  _id: ObjectId('676a5f92942d6a92ee8b3c1d'),
+  UserId: 'rachel_11',
+  Name: 'Rachel Greene',
+  Location: 'New York',
+  PhoneNo: 123456789,
+  University: 'Vassar University',
+  Graduated: 2014
+}
+
+
+*********************************************************************************************
+
+EXERCISE-2::
+
+Eat, Fit and Food - Update Operation
+Problem Statement :
+To update the data for already existing restaurants, implement the following requirements given in the restaurants collection.
+
+1. Write a query to update the capacity of Blue Sky to 37.
+
+db.restaurants.updateOne({restaurantName:'Blue Sky'},{$set: {capacity:37}})
+
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+
+2. Write a query to add another place as 
+    {
+        "country": "India",
+        "pincode": 940334
+    } 
+    in the location array of Daily Grill restaurant 
+
+db.restaurants.updateOne({restaurantName:'Daily Grill'},{$push:{location:{country:"India",pincode:940334}}})
+
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+3. Write a query to update the name of the restaurant Taste Buds to Taste Buds Delight
+
+db.restaurants.updateOne({'restaurantName': 'Taste Buds'},{$set:{'restaurantName':'Taste Buds Delight'}})
+
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+4. Write a query to increase the capacity by 5 for all the restaurants operating in city Vadodara.
+
+db.restaurants.updateMany({'location.city':'Vadodara'},{$inc:{capacity:5}})
+
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DELETE OPERATION EXERCISES::
+
+EXERCISE-1::
+
+Delete ConnectMe user profiles
+Problem Statement:
+You have already updated some user profiles in the ConnectMe database in the previous exercise.
+
+Now, delete all user profiles whose age is above 40 and are located in Mexico.
+
+
+:::::::::::::::::::::::::::OUTPUT:::::::::::::::::::::::::::
+
+db.user_profiles.deleteMany({Age:{$gt:40},Location:'Mexico'})
+
+{
+  acknowledged: true,
+  deletedCount: 1
+}
+
+
+*********************************************************************************************
+
+
+EXERCISE-2::
+
+Eat, Fit and Food
+Problem Statement:
+Eat, Fit and Food has decided to remove some of the data from their inventory. Now they want us to write some queries to delete the data based on the given requirements.
+
+1.Write a query to delete the restaurant if the restaurant name is Taste buds 
+
+db.restaurants.deleteMany({restaurantName:'Taste buds'})
+
+{
+  acknowledged: true,
+  deletedCount: 0
+}
+
+2. Write a query to delete the restaurant if the restaurant is serving Lassi.
+
+db.restaurants.deleteMany({'cuisineDetails.details.name':'​Lassi'})
+
+{
+  acknowledged: true,
+  deletedCount: 1
+}
+
+
+3.Write a query to delete the restaurant if the price of the food is greater than Rs.400
+
+db.restaurants.deleteMany({'cuisineDetails.details.price':{$gt:400}})
+
+{
+  acknowledged: true,
+  deletedCount: 2
+}
+
+4. Write a query to delete the restaurants where only two kinds of cuisines are served.
+
+db.restaurants.deleteMany({
+  $expr: {
+    $eq: [
+      { $size: { $setUnion: "$cuisineDetails.cuisineType" } },
+      2
+    ]
+  }
+})
+
+{
+  acknowledged: true,
+  deletedCount: 2
+}
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+AGGREGATION EXERCISES::
+
+EXERCISE-1:: Perform additional inventory analysis
+
+Problem Statement :
+You have already seen how to retrieve the top ten most expensive mobiles from Zoiva's catalog.
+
+Retrieve the ten least expensive mobiles and store it in a new collection called TopTenCheapestMobiles.
+
+Create a new collection, called MiMobiles. This collection should contain only the manufacturer, model and price fields of the phones manufactured by Mi that cost 15000 or less.
+
+Create a new collection, called SamsungMobiles. This collection should contain only the manufacturer, model and price fields of the phones manufactured by Samsung that cost more than 7000.
+
+Expected Output :
+1. Execution of the find() query on the TopTenCheapestMobiles collection should display the output as shown in the below image.
+
+db.product_catalog.aggregate([{$sort:{price:1}},{$limit:10},{$out:"TopTenCheapestMobiles"}])
+db.TopTenCheapestMobiles.find()
+
+
+2. Execution of the find() query on the MiMobiles collection should display 2 documents in the output as shown in the below image.
+
+db.product_catalog.aggregate([
+  {$match:{$and:[{manufacturer:"mi"},{price:{$lte:15000}}]}},
+  {$project:{manufacturer:1,model:1,price:1}},
+  {$out:"MiMobiles"}
+])
+db.MiMobiles.find()
+
+
+
+3. Execution of the find() query on the SamsungMobiles collection should display 3 documents in the output as shown in the below image.
+
+db.product_catalog.aggregate([
+  {$match:{$and:[{manufacturer:"samsung"},{price:{$gt:7000}}]}},
+  {$project:{manufacturer:1,model:1,price:1}},
+  {$out:"SamsungMobiles"}
+])
+db.SamsungMobiles.find()
+
+
+*********************************************************************************************
+
+EXERCISE-2::
+
+Eat, Fit and Food
+Problem Statement :
+Eat, Fit and Food is now looking for results based on grouped data for which aggregation framework would be needed. Implement the following to achieve the requirement.
+
+1. Write a query to fetch all the restaurants.
+
+db.restaurants.aggregate([])
+
+2. Write a query to fetch categories of cuisines served in the restaurants.
+
+db.restaurants.aggregate([
+  {$project:{"cuisineDetails.category":1,_id:0,restaurantName:1}}
+])
+
+3 Write a query to fetch restaurantName as "Restaurant Name" having cuisineType as "Arabian".
+
+db.restaurants.aggregate([
+  {$match:{"cuisineDetails.cuisineType":'Arabian'}},
+  {$project:{'Restaurant Name':"$restaurantName",_id:0}}
+])
+
+
+
+
+4. Write a query to find the total number of restaurants in this collection and give the alias as "Total Restaurant"
+
+db.restaurants.aggregate([
+  {$group:{_id:"$restaurantName"}},
+  {$count:"Total Restaurant"}
+])
+
+5. Write an aggregate query to fetch the capacity of each restaurant and give the alias as "Total Capacity"
+
+db.restaurants.aggregate([
+  {$group:{_id:"$restaurantName","Total Capacity":{$sum:"$capacity"}}}
+])
+
+6. Write an aggregate query to fetch all the state names of the restaurants
+
+db.restaurants.aggregate([
+  {$unwind:"$location"},
+  {$group:{_id:"$location.state"}},
+  {$project:{_id:0,StateName:"$_id"}}
+])
+
+7. Write an aggregate query to fetch all the Cuisines from cuisineList and give the alias as "Cuisine"
+
+db.restaurants.aggregate([
+{$unwind:"$cuisineList"},
+{$group:{_id:"$cuisineList"}},
+{$project:{_id:0,Cuisine:"$_id"}}
+]
+)
+
+8. Write an aggregate query to fetch all the Veg food items
+
+db.restaurants.aggregate([
+  
+  {$unwind:"$cuisineDetails"},
+  {$unwind:"$cuisineDetails.details"},
+{$match:{"cuisineDetails.details.ftype":'Veg'}},
+  {$group:{_id:"$cuisineDetails.details.name"}},
+  {$project:{_id:0,VegItem:"$_id"}}
+  
+])
+
+9. Write an aggregate query to display all the Northern Mexican food items as an alias "Northern Mexican Dish" along with Restaurant Name as an alias "Restaurant"
+
+db.restaurants.aggregate([
+  {$unwind:"$cuisineDetails"},
+  {$match:{$and:[{"cuisineDetails.category":'Northern Mexico'},{"cuisineDetails.category":{$exists:true}}]}},
+  {$project:{_id:0,"Restaurant":"$restaurantName","Northern Mexican Dish":"$cuisineDetails.details.name"}}
+
+])
+
+10. Write an aggregate query to fetch all the Indian food items
+
+db.restaurants.aggregate([
+  {$unwind:"$cuisineDetails"},
+  {$unwind:"$cuisineDetails.details"},
+  {$match:{"cuisineDetails.cuisineType":'Indian'}},
+  {$group:{_id:"$cuisineDetails.details.name"}},
+  {$project:{_id:0,"Indian Food Items":"$_id"}}
+
+])
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+INDEXES EXERCISES::
+
+Optimize retrieval of user profiles
+Problem Statement :
+Users on the ConnectMe app frequently search for friends by using specific details. Create the indexes as described below to make the search operation faster.
+
+1. Create an ascending single field index called asc_userId on the userId field.
+
+db.user_profiles.createIndex({UserId:1},{name:"asc_userId"})
+
+o/p:
+asc_userId
+
+
+2. Create a text index on the location field.
+
+db.user_profiles.createIndex({Location:"text"})
+
+o/p:
+Location_text
+
+*******************
+db.user_profiles.find({$text:{$search:"New York"}})
+{
+  _id: ObjectId('676a5f92942d6a92ee8b3c1d'),
+  UserId: 'rachel_11',
+  Name: 'Rachel Greene',
+  Location: 'New York',
+  PhoneNo: 123456789,
+  University: 'Vassar University',
+  Graduated: 2014
+}
+*******************
+
+3. Also, create a descending single field index called desc_phNo, on the phone number field. 
+
+db.user_profiles.createIndex({PhoneNo:-1},{name:"desc_phNo"})
+
+o/p:
+desc_phNo
+
+

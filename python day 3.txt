@@ -1,0 +1,166 @@
+import re #should be in all programs to use regular expression
+
+***************************
+
+import re
+
+st="I Love Python"
+
+print(re.search("Love",st))
+print(re.search("[A-Z]",st)) #Capital occurrence
+
+if(re.search("[A-Z]",st)!=None):
+	print("Match Found")
+else:
+	print("Match not Found")
+
+*****************************
+
+import re
+
+st="2647583920"
+
+print(re.search(r"^[0-9]{10}$",st))
+
+if(re.search(r"^\d{10}$",st)!=None):
+	print("Match Found")
+else:
+	print("Match not Found")
+
+*******************************
+
+import re
+
+st="I Love Python"
+
+print(re.sub(r"L","l",st))
+
+print(re.sub("[A-Z]","1",st))
+
+print(re.search(r"\bLove\b",st)) #\b matches all special characters except underscore(_)
+
+print(re.search(r"love",st,re.I))
+
+*******************************
+
+fh=open('data.txt','r')
+fh=open('data.txt','w') #if we just open and don't write anything the existing data will be deleted
+fh=open('data.txt','a') #it will be opened in append mode, data will be appended to the existing data
+
+---------------
+
+fhr=open('data.txt','r')
+
+data=fhr.read()
+
+print(type(data))
+print(data)
+
+-----------------
+fhr=open('data.txt','r')
+data1=fhr.readlines()
+print(type(data1))
+print(data1)
+
+-----------------
+
+fhr=open('data.txt','r')
+data2=fhr.readline()
+
+while(data2):
+	print(data2,end='')
+	data2=fhr.readline()
+
+for line in fhr:
+	print(line.strip())
+
+fhr.close()
+fha=open('data.txt','a') #file append
+fha.write("\nabcd\nefgh\nijkl")
+fha.close()
+
+fhr=open('data.txt','r')- #file read
+for line in fhr:
+	print(line.strip())
+
+fhw=open('data.txt','w') #file write
+fhw.write("\nabcd\nefgh\nijkl")
+fhw.close()
+
+************************************
+
+fhr=open('data.txt','rb+')
+print(fhr.tell())
+
+fhr.seek(5,0) #offset,whence-0 from begin, current cursor and 2 end of file
+print(fhr.tell()) #after above code give current cursor position
+fhr.seek(7,1)
+print(fhr.tell())
+fhr.seek(-3,1)
+print(fhr.tell())
+
+
+************************************
+
+fhr=open('data.txt','rb+')
+#file attributes
+print(fhr.name)
+print(fhr.mode)
+print(fhr.closed)
+
+
+************************************
+************************************
+
+
+def find_avg(l):
+	s=0
+	try:
+		for i in l:
+			s+=i
+		avg=s/len(l)
+		return avg
+	except TypeError:
+		print("type error occured")
+	except ZeroDivisionError:
+		print("type error occured")
+	except:
+		print("something went wrong")
+	finally:
+		print("Returning from function")
+try:
+	l1=[10,20,30,40,50]
+	print(find_avg(l1))
+except NameError:
+	print("Wrong name")
+except ValueError:
+	print("Value error")
+except:
+	print("something went wrong outside")
+finally:
+	print("Returning from program")
+
+
+************************************
+************************************
+
+def add(a,b):
+    return a+b
+    
+def sample(fun,x,y):
+    print(fun(x,y))
+    
+sample(add,10,20)
+
+#OR
+
+sample(lambda x,y:x+y,10,20)
+
+sample(lambda x,y: x if(x>y) else y,10,20) #greatest of two numbers
+
+sample(lambda x,y:x if(x>y) else y if(x<y) else "equal",20,20)
+
+f=lambda x,y=100:x+y
+print(f(10,20))
+print(f(10))
+print(f(y=20,x=30))
