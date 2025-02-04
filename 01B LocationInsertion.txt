@@ -1,0 +1,8 @@
+db.location.insertMany
+([
+{_id:1,"locationid":101,"City":"Henderson","State":"Kentucky","Postal Code":42420,"Region":"South"},
+{_id:2,"locationid":201,"City":"Los Angeles","State":"California","Postal Code":90036,"Region":"West"},
+{_id:3,"locationid":301,"City":"Fort Lauderdale","State":"Florida","Postal Code":33311,"Region":"South"},
+{_id:4,"locationid":401,"City":"Los Angeles","State":"California","Postal Code":90032,"Region":"West"}
+])
+4

@@ -1,0 +1,27 @@
+Exercise 2:
+
+EmpNo#Email#Name#JobLevel#Experience
+641357#Amrit_Mohanty#Amrit Mohanty#3#2
+678522#Puneet_Mishra#Puneet Mishra#3#1
+670242#Vikas_Bharti#Vikas Bharti#3#1.5
+661822#Aravind_Raghavan#Aravind Raghavan#3#1.5
+706209#Sankavi.Boopathy#Sankavi Boopathy#3#0.5
+706452#Raja.Ravi#Raja Ravi#3#0.5
+
+1. Write a command to display the employee with the highest experience in years (last column)
+cat employee1.txt | grep -f <(tail -n +2 employee1.txt | sort -t '#' -k5 -rn | head -n 1)
+
+
+2. Write a command to display all the employees whose first name have more than 6 characters
+cat employee1.txt | grep -f <(tail -n +2 employee1.txt | cut -d '#' -f3 | cu
+t -d ' ' -f1 | grep -E '[A-Za-z]{7,}')
+
+
+3. Write a command to display two employees with least years of experience
+tail -n +2 employee1.txt | sort -t '#' -k5 | head -n 2
+'OR'
+cat employee1.txt | grep -f <(tail -n +2 employee1.txt | sort -t '#' -k5 | h
+ead -n 1 | cut -d '#' -f5)
+
+
+4. Write a command to display all repetitive years of experience values

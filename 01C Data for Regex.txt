@@ -1,0 +1,76 @@
+use customer
+
+db.cust.insertMany(
+[
+  {
+    _id: 1,
+    custname: 'megaretail',
+    address: 'Raja Mahal Shopping Centre, Andheri (West) \nMumbai ',
+    country: 'INDIA'
+  },
+  {
+    _id: 2,
+    custname: 'stayinhotels',
+    address: 'Indo Ind Est2, Navghar, Vasai (W) \nMumbai ',
+    country: 'India'
+  },
+  {
+    _id: 3,
+    custname: 'randompublish',
+    address: 'Birla Temple, \nNew Delhi',
+    country: 'India'
+  },
+  {
+    _id: 4,
+    custname: 'xyzpublish',
+    address: 'Preet Vihar \nNew Delhi',
+    country: 'India'
+  },
+  {
+    _id: 5,
+    custname: 'ABCpuBlish',
+    address: 'Phase2before bus stop  \nPune',
+    country: 'InDia'
+  },
+  {
+    _id: 6,
+    custname: 'abcpuBlish',
+    address: 'Phase2 \n Industrial area after metro \nBangalore',
+    country: 'India'
+  },
+
+{
+    _id: 7,
+    custname: 'ABCpuBlish',
+    address: 'Phase2   after bus stop  \nPune',
+    country: 'InDia'
+  },
+
+
+]
+)
+
+
+db.cust.find().forEach(printjson)
+
+db.cust.find()
+
+db.cust.find({   address: { $regex: "I\n.*", $options: "x" }  }).forEach(printjson)
+
+
+// Find the relevant documents when spaces are present in search string
+
+db.cust.find({ address: { $regex: "I n d", $options: "x" } })
+
+
+// Find the string which has spaces or carriage return as part for a given string
+
+db.cust.find({ "address": { $regex: /Phase2./ } }); // without space after "Phase2."
+db.cust.find({ "address": { $regex: /Phase2. / } }); // without carriage return
+db.cust.find({ "address": { $regex: /Phase2. / , $options: "s" } });
+
+
+// Find word starting with letter B as a search character found in multiple lines
+
+db.cust.find({ "address": { $regex: /^B/ } });
+db.cust.find({ "address": { $regex: /^B/, $options: "m" } }); // Finds pattern in multiple lines 

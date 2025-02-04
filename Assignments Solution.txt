@@ -1,0 +1,214 @@
+Assignments
+
+
+Ass No. 1
+
+1. Display the Name of the candidate(s) belonging to the city "Mysore".
+
+db.candidate.find({ "Address.City": "Mysore" }, { _id: 0, Name: 1 })
+
+
+2. Display the Name and Hobbies of the candidates whose hobby is "Playing Cricket" or "Dancing".
+
+db.candidate.find({ "Address.City": "Mysore" }, { _id: 0, Name: 1 })
+
+3. Display the total count of B.E. graduates among the candidates using find() method.
+
+db.candidate.find({ "Education": "B.E" }).count();
+or
+db.candidate.countDocuments({ "Education": "B.E" })
+
+
+4. Display the user details whose Name is starting with 'L'. (Case sensitive)
+
+db.candidate.find({ Name: { $regex: /^L/ } })
+
+
+5. Display the Name, Pincode and Salary details of the candidates whose Name is ending with 'N' or 'L' (Case insensitive)
+
+db.candidate.find({ Name: { $regex: /(N|L)$/i } }, { _id: 0, Name: 1, "Address.Pincode": 1, Salary: 1 })
+
+
+6. Display the Candidate details whose Salary is greater than 10000 and coming from "Bangalore" city.
+
+db.candidate.find({ Salary: { $gt: 10000 }, "Address.City": "Bangalore" })
+
+
+7. Display the candidate details whose salary is less than or equal to 30000.
+
+db.candidate.find({ Salary: { $lte: 30000 } });
+or
+db.candidate.find({  $or: [ { Salary: { $lte: 30000 } }, { Salary: { $exists: false } }  ] });
+
+
+8. Display the maximum salary of candidates who are in "Banglore" city.
+
+db.candidate.aggregate([ { $group: { _id: "$Address.City", "Maximum Salary": { $max: "$Salary" } } }, { $match: { _id: "Bangalore" } }, { $project: { _id: 0, "Maximum Salary": 1 } } ])
+or
+db.candidate.aggregate([ { $match: { "Address.City": "Bangalore" } }, { $group: { _id: "$Address.City", "Maximum Salary": { $max: "$Salary" } } }, { $project: { _id: 0 } } ])
+
+
+// If to display the candidate document whose
+ has maximum salary in "Bangalore" city.
+
+db.candidate.find({ "Address.City": "Bangalore" }).sort({ Salary: -1 }).limit(1);
+
+
+9. Sort the documents by name in ascending order.
+
+db.candidate.find().sort({ Name: 1 });
+or
+db.candidate.find({}, {}, { sort: { Name: 1 } })
+
+
+10. Display the number of candidates in each hobby category.
+
+db.candidate.aggregate([ { $unwind: { path: "$Hobbies" } }, { $group: { _id: "$Hobbies", "Count": { $sum: 1 } } } ])
+
+
+11. Update the candidate salary as 35000 whose name is "Preetham". If that candidate is not in the list, add his name in the "Candidate1" collection.
+
+
+
+12. Add "Cooking" hobby in candidates' hobby list whose name is "Lalitha". Don't allow duplication in hobbies list.
+
+db.candidate.updateOne({ Name: "Lalitha" }, { $addToSet: { Hobbies: { $each: [ "Cooking" ] } } })
+
+
+13. Remove last hobby of the candidate whose name is "Micheal".
+
+db.candidate.updateOne({ Name: "Micheal" }, { $pop: { Hobbies: 1 } })
+
+
+14. In "Kevin" details, need to add two experiences in the following format:
+
+db.candidate.updateOne({ Name: "Kevin" }, { $set: { Experience: [ { "Company Name": "XYZ", "DOJ": new Date("2020-01-01"), "DOR": new Date("2021-03-05") }, { "Company Name": "ABC", "DOJ": new Date("2021-04-01"), "DOR": new Date("2024-03-01") } ] } })
+
+15. After adding experience in "Kevin" documents, the user noticed that he forgot to add his first experience in that document. So he wants to add the following experience in first place of the experience field.
+
+db.candidate.updateOne({ Name: "Kevin" }, { $push: { Experience: { $each: [ { "Company Name": "RST", "DOJ": new Date("2018-01-19"), "DOR": new Date("2019-12-12") } ], $position: 0 }  } } )
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Ass No. 2
+
+
+1. Display the passenger PNRNo, Source, Destination, DateOfJourney of those passengers who are traveling in the month of "May" and at 9 AM.
+
+
+
+2. Display sum of travel fare amount of TOP 3 transactions arranged based on TotalFare.
+
+db.railway_reservation.aggregate([ { $sort: { TotalFare: 1 } }, { $limit: 3 }, { $group: { _id: null, "TotalFareAmount": { $sum: "$TotalFare" } } }, { $project: { _id: 0, TotalFareAmount: 1 } } ])
+
+
+3. Generate a ticket ID by combining the day part of the travel date, the first letter number of the source and destination, 3 characters of the month of travel (in upper case), the first number in _id, classes.
+
+db.railway_reservation.aggregate([ { $project: { _id: 1, PNRNo: 1, TicketID: { $concat: [ { $substr: ["$DateOfJourney", 6, 2] }, { $substr: ["$TravelLocation.Source", 0, 1] }, { $substr: ["$TravelLocation.Destination", 0, 1] }, { $substr: [{ $toUpper: "$DateOfJourney" }, 9, 3] }, { $substr: [ "$_id", 0, 1] }, "$Classes" ] } } } ])
+
+
+
+4. Display the total number of passengers traveling to CHN irrespective of their source.
+
+db.railway_reservation.aggregate([ { $match: { "TravelLocation.Destination": "CHN" } }, { $group: { _id: null, "Number of Passengers Travelling to Chennai:" : { $sum: 1 } } }, { $project: { _id: 0 } } ])
+
+
+5. Display the most frequent travel destination in May.
+
+db.railway_reservation.aggregate([ { $match: { "DateOfJourney": { $regex: /May/ } } }, { $group: { _id: "$TravelLocation.Destination", Count: { $sum: 1 } } }, { $sort: { Count: -1 } }, { $limit: 1 } ])
+
+
+6. Display class name in which most of the passengers opted insurance.
+
+db.railway_reservation.aggregate([ { $match: { "InsuranceOpted": "Yes" } }, { $group: { _id: "$Classes", sum: { $sum: "$TotalNumberOfPassengers" } } }, { $addFields: { "Class is": "$_id" } }, { $sort: { sum: -1 } }, { $limit: 1 }, { $project: { _id: 0, sum: 0 } } ])
+
+
+7. Display average ticket fare, maximum ticket fare, minimum ticket fare for each class.
+
+db.railway_reservation.aggregate([ { $group: { _id: "$Classes", "Average Ticket Fare": { $avg: "$TotalFare" }, "Maximum Fare": { $max: "$TotalFare" }, "Minimum Fare": { $min: "$TotalFare" } } } ])
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Ass No. 3
+
+1. Display the first_name, last_name with delimiter ' '(space) as Name of the records where last_name having only one letter. Records should be distinct.
+
+// db.order.aggregate([ { $group: { _id: { first_name: "$first_name", last_name: "$last_name" } } }, { $addFields: { "Name": { $concat: [ "$_id.first_name", " ", { $substr: ["$_id.last_name", 0, 1] } ] } } }, { $project: { _id: 0 } } ])
+
+db.order.aggregate([ 
+	{ $project: { first_name: 1, last_name: 1, lastNameLength: { $strLenCP: "$last_name" } } }, 
+	{ $match: { lastNameLength: { $eq: 1 } } },
+	{ $group: { _id: { first_name: "$first_name", last_name: "$last_name" } } },
+	{ $addFields: { "Name": { $concat: ["$_id.first_name", " ", "$_id.last_name"] } } },
+	{ $project: { _id: 0 } }
+])
+OR
+db.order.aggregate([ 
+	{ $project: { first_name: 1, last_name: 1, lastNameLength: { $strLenCP: "$last_name" } } }, 
+	{ $match: { lastNameLength: { $eq: 1 } } },
+	{ $group: { _id: { first_name: "$first_name", last_name: "$last_name" } } },
+	{ $addFields: { "Name": { $concat: ["$_id.first_name", " ", "$_id.last_name"] } } },
+	{ $project: { _id: 0 } }
+])
+
+
+2. Display customer name and number of orders ordered by each customer.
+
+db.order.aggregate([ { $group: { _id: "$first_name", "orders": { $sum: 1 } } } ])
+
+
+3. Display top 5 customers based on total money spent on all their orders.
+
+db.order.aggregate([ { $group: { _id: "$first_name", "Amount": { $sum: "$amount" } } }, { $sort: { Amount: -1 } }, { $limit: 5 } ])
+
+
+4. Display the number of unique customers in each gender
+
+db.order.aggregate([ { $group: { _id: { first_name: "$first_name", last_name: "$last_name", "gender": "$gender" } } }, { $group: { _id: "$_id.gender", Count: { $sum: 1 } } } ])
+or
+db.order.aggregate([{$group: {_id: "$email", "first_name": {$first: "$first_name"}, "last_name": {$first: "$last_name"}, "gender": {$first: "$gender"}}}, {$group: {_id: "$gender", count: {$sum: 1}}}])
+or
+db.order.aggregate([ 
+	{ $group: { _id: "$gender", customer: { $addToSet: "$email" } } },
+	{ $addFields: { Count: { $size: "$customer" } } },
+  { $project: { customer: 0 } } 
+])
+
+
+5. Write an equivalent MongoDB query for the given SQL query SELECT payment, SUM(amount) AS totalAmount FROM InfySpace GROUP BY payment ORDER BY SUM(amount) DESC
+
+db.order.aggregate([
+	{ $group: { _id: "payment", totalAmount: { $sum: "$amount" } } },
+	{ $sort: { totalAmount: -1 } }
+])
+
+
+6. Write an equivalent MongoDB query for the given SQL Query SELECT first_name, COUNT(*) as count FROM InfySpace WHERE first_name LIKE '%a' GROUP BY first_name ORDER BY COUNT(*) DESC
+
+db.order.aggregate([
+	{ $match: { first_name: { $regex: /a$/ } } },
+	{ $group: { _id: "$first_name", count: { $sum: 1 } } },
+	{ $sort: { count: -1 } }
+])
+
+
+
+7. Display the number of orders placed in February.
+
+db.sales.aggregate([
+{ $project: {
+	items: { 
+		$filter: {
+			input: "$items",
+			as: "item",
+			cond: { 
+				$regexMatch: { input: "$$item.name", regex: /^p/ }  
+			}
+		}
+	}
+} }
+])

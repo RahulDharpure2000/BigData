@@ -1,0 +1,35 @@
+// This dataset to be used for explaining CRUD
+
+db.empdept.deleteMany({})
+
+db.empdept.insertOne (
+{ 
+"_id":1,
+"empno" : 7521,
+"ename" : "WARD", 
+"job" : "SALESMAN", 
+"mgr" : 7698,
+"skill":["MS-Power Point"], 
+"sal" : 1700, 
+"comm" : 100, 
+ dept:{"dname":"SALES","locationid":301}
+}
+)
+
+
+
+db.empdept.insertMany([
+{ 
+_id:2,
+"empno" : 7566, "ename" : "JONES", "job" : "MANAGER", "mgr" : 7839,"skill":["MS Word", "MS Excel"],"sal" : 3500,
+dept:{"dname":"RESEARCH","locationid":201}
+},
+
+{ _id:3,"empno" :7698, "ename" : "BLAKE", "job" :"SALESMAN", "mgr" : 7566,"skill":["MS Power Point"],"sal" : 3300, "comm" :150, 
+dept:{"dname":"SALES","locationid":301}
+},
+
+{_id:4, "empno" :7782, "ename" : "CLARK", "job" : "CLERK", "mgr" : 7566,"sal" : 2800, "comm" :150, dept:{"dname":"ACCOUNTING","locationid":101}
+}
+
+])

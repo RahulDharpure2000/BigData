@@ -1,0 +1,268 @@
+1. Display Customer Name and cities from which they have placed orders.
+db.orders.aggregate([
+  { $group: { _id: "$Customer Name", cities: { $addToSet: "$City" } } },
+  { $project: { _id: 0, "Customer Name": "$_id", cities: 1 } }
+])
+
+---------------------------------------------------------------
+
+2. Display any 5 records from a collection
+db.orders.find().limit(5);
+'OR'
+db.orders.aggregate([
+   { $sample: { size: 5 } }
+])
+
+---------------------------------------------------------------
+
+3. Select 10 Customer Name, Region and Sales sort region in ascending order & sales in descending order
+db.orders.find({}, { _id: 0, 'Customer Name': 1, Region: 1, Sales: 1 }, { sort: { Region: 1, Sales: -1 } }).limit(10)
+"OR"
+db.orders.aggregate([
+  { $project: { _id: 0, 'Customer Name': 1, Region: 1, Sales: 1 } },
+  { $sort: { Region: 1, Sales: -1 } },
+  { $limit: 10 }
+])
+
+
+---------------------------------------------------------------
+
+4. Display Customer Name of 5 customers who are from central region based on maximum profit they have given
+db.orders.find(
+	{ Region: 'Central' },
+	{ _id: 0, 'Customer Name': 1 },
+	{ sort: { Profit: -1 }, limit: 5 }
+)
+
+db.orders.aggregate([
+  { $match: { Region: 'Central' } },
+  { $group: { _id: { 'Customer Name': '$Customer Name', Profit: '$Profit' }, priority: { $addToSet: '$Priority' } } },
+  { $sort: { "_id.Profit": -1 } },
+  { $limit: 5 },
+  { $project: { _id: 0, 'Customer Name': "$_id.Customer Name" } }
+])
+"OR"
+db.orders.aggregate([
+  { $match: { Region: 'Central' } },
+  { $group: { _id: '$Customer Name', profit: { $sum: '$Profit' } } },
+  { $sort: { "profit": -1 } },
+  { $limit: 5 }
+])
+
+---------------------------------------------------------------
+
+5. Display Customer Name of customers who have opted for "L" priority
+db.orders.aggregate([
+  { $match: { "Priority": "L" } },
+  { $group: { _id: "$Customer Name" } },
+  { $project: { _id: 0, "Customer Name": "$_id" } }
+])
+'OR'
+db.orders.distinct('Customer Name', { 'Priority': 'L' });
+
+---------------------------------------------------------------
+
+6. Display Customer Name, region and city of customers who have not opted for priority
+db.orders.find({ Priority: { $exists: false } }, { _id: 0, 'Customer Name': 1, Region: 1, City: 1 })
+
+---------------------------------------------------------------
+
+7. Display number of customers who have opted for "H" priority and color is Red
+db.orders.find({ "Priority": "H", "Color": "Red" }).count();
+
+---------------------------------------------------------------
+
+8. Display Name of all cities from where orders have been placed for chains
+db.orders.find({ Subcategory: "Chains" }, { _id: 0, City: 1 })
+"OR"
+db.orders.aggregate([
+  { $match: { Subcategory: "Chains" } },
+  { $group: { _id: "$City" } }
+])
+'OR'
+db.orders.distinct('City', { Subcategory: "Chains" })
+
+----------------------------------------------------------------
+
+9. Dispay number of unique orders placed
+db.orders.aggregate([
+  { $group: { _id: "$OrderID" } },
+  { $count: "uniqueOrders" }
+]);
+'OR'
+db.orders.distinct('OrderID')
+
+----------------------------------------------------------------
+
+10. Display states where silver color is preferred
+db.orders.aggregate([
+  { $match: { "Color": "Silver" } },
+  { $group: { _id: "$State" } },
+  { $project: { _id: 0, state: "$_id" } }
+])
+'OR'
+db.orders.distinct('State', { Color: 'Silver' })
+
+----------------------------------------------------------------
+
+11. Display Customer Name of all customers, whose name starts with letter 'A' irrespective of case
+db.orders.aggregate([
+  { $match: { "Customer Name": { $regex: /^A/i } } },
+  { $group: { _id: "$Customer Name" } },
+  { $project: { _id: 0, "Customer Name": "$_id" } }
+])
+"OR"
+db.orders.distinct("Customer Name", { "Customer Name": { $regex: /^A/i } })
+
+----------------------------------------------------------------
+
+12. Display Customer Name of all customers who are from 'Texas' or 'New york' city
+db.orders.find(
+	{ State: { $in: [ 'Texas', 'New York' ] } },
+	{ 'Customer Name': 1 }
+)
+'OR'
+for unique customer name in array
+db.orders.aggregate([
+	{ $match: { State: { $in: ["Texas", "New York"] } } },
+	{ $group: { _id: null, 'Customer Names': { $addToSet: "$Customer Name" } } },
+	{ $project: { _id: 0 } }
+])
+'OR'
+db.orders.aggregate([
+  { $match: { State: { $in: ["Texas", "New York"] } } },
+  { $group: { _id: "$Customer Name" } },
+  { $project: { _id: 0, "Customer Name": "_id" } }
+])
+'OR'
+db.orders.distinct('Customer Name', { State: { $in: ['Texas', 'New York'] } })
+
+------------------------------------------------------------------
+
+13. Display ProductID where qty is between 2 and 5 (inclusive)
+db.orders.find(
+	{ qty: { $gte: 2, $lte: 5 } },
+	{ _id: 0, 'Product ID': 1 }
+)
+'OR'
+db.orders.distinct('Product ID', { qty: { $gte: 2, $lte: 5 } })
+
+
+------------------------------------------------------------------
+
+
+14. Add a column unit price by computing sales/qty
+db.orders.updateMany(
+	{ qty: { $ne: 0 } },
+	[
+		{ $set: { 'Unit Price': { $divide: ["$Sales", "$qty"] } } } 
+	]
+)
+'OR'
+db.orders.aggregate([
+  { $addFields: { 'Unit Price': { $divide: ["$Sales", "$qty"] } } }
+])
+
+------------------------------------------------------------------
+
+15. Remove the color column and update the below colors as an array for respective products
+
+311	Red	Black Silver
+310	Red	Black Silver
+453	Red	Black Silver
+406	Red	Black Silver
+
+514		Black Silver
+235		Black Silver
+559		Black Silver
+555		Black Silver
+
+344	Red	Black
+602	Red	Black
+407	Red	Black
+
+561	Red	      Silver
+587	Red	      Silver
+560	Red	      Silver
+
+db.orders.updateMany(
+	{ 'Product ID': { $in: [ 311, 310, 453, 406 ] } },
+	{ $set: { Color: ["Red", "Black", "Silver"] } }
+)
+
+db.orders.updateMany(
+	{ "Product ID": { $in: [514, 235, 559, 555] } },
+	{ $set: { Color: ["Black", "Silver"] } }
+)
+
+db.orders.updateMany(
+	{ "Product ID": { $in: [344, 602, 407] } },
+	{ $set: { Color: ["Red", "Black"] } }
+)
+
+db.orders.updateMany(
+	{ "Product ID": { $in: [561, 587, 560] } },
+	{ $set: { Color: ["Red", "Silver"] } }
+)
+
+-------------------------------------------------------------------
+
+16. How many orders have the product with all Red, Black & Silver colors
+db.orders.find({ "Color": { $all: ["Red", "Black", "Silver"] } }).count()
+
+-------------------------------------------------------------------
+
+17. Display number of product names under Home office Segment
+db.orders.find({ "Segment": "Home Office" })
+'OR'
+db.orders.distinct("ProductName", {"Segment": "Home Office" })
+
+-------------------------------------------------------------------
+
+18. Display customer name, order number, order date from Ease who bought Handlebars
+db.orders.find(
+	{ "Region": "East", "Subcategory": "Handlebars" },
+  { _id: 0, "Customer Name": 1, "OrderID": 1, "OrderDate": 1 }
+)
+
+-------------------------------------------------------------------
+
+19. Display profit made by corporate Segment
+db.orders.find(
+	{ Segment: "Corporate" },
+	{ Profit: 1 }
+)
+'OR'
+This will give total profit done 
+db.orders.aggregate([
+	{ $match: { Segment: "Corporate" } },
+	{ $group: { _id: "$Segment", totalProfit: { $sum: "$Profit" } } }
+])
+
+-------------------------------------------------------------------
+
+20. Display total quantity of subcategory Mountain Bikes
+
+db.orders.find(
+	{ "Subcategory": "Mountain Bikes" },
+  	{ _id:0, qty: 1 }
+)
+'OR'
+db.orders.aggregate([
+	{ $match: { "Subcategory": "Mountain Bikes" } },
+	{ $group: { _id: "$Subcategory", totalquantity: { $sum: "$qty" } } }
+])
+
+
+
+
+
+
+
+
+
+
+
+
+
+

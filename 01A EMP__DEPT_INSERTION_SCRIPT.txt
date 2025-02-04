@@ -1,0 +1,48 @@
+db.empdept.insertMany (
+[{ 
+"_id":1,
+"empno" : 7521,
+"ename" : "WARD", 
+"job" : "SALESMAN", 
+"mgr" : 7698,
+"doj": "02-FEB-81",
+"skill":["MS Excel","MS-Power Point"], 
+"sal" : 1700, 
+"comm" : 100, 
+ dept:{"dname":"SALES","locationid":301}
+},
+
+{ 
+_id:2,
+"empno" : 7566, "ename" : "JONES", "job" : "MANAGER", "mgr" : 7839,"doj": "06-APR-81", "skill":["MS Excel","MS-Power Point"],"sal" : 3500, "comm" :250, 
+dept:{"dname":"RESEARCH","locationid":201}
+},
+{ _id:3,"empno" :7698, "ename" : "BLAKE", "job" :"MANAGER", "mgr" : 7839,"doj": "05-MAY-81", "skill":["MS Word","MS Excel","MS Power Point"],"sal" : 3300, "comm" :150, 
+dept:{"dname":"SALES","locationid":301}
+},
+{_id:4, "empno" :7782, "ename" : "CLARK", "job" : "MANAGER", "mgr" : 7839,"doj": "05-JUN-81", "sal" : 2800, "comm" :150, dept:{"dname":"ACCOUNTING","locationid":101}
+},
+{ _id:5,"empno" :7788, "ename" : "SCOTT", "job" : "ANALYST", "mgr" : 7566,"doj": "20-APR-80", "skill":["MS Excel"],"sal" : 3500, 
+dept:{"dname":"RESEARCH","locationid":201} 
+},
+{ _id:6,"empno" :7839, "ename" : "KING", "job" : "PRESIDENT", "mgr" : "","doj": "02-FEB-81", "sal" : 5000, "comm" :null, dept:{"dname":"SALES","locationid":101} 
+},
+{ _id:7,"empno" : 7844, "ename" : "TURNER", "job" : "SALESMAN", "mgr" : 7698,"doj": "06-SEP-81","skill":["MS Excel","MS Power Point"], "sal" : 2000, "comm" :125, 
+dept:{"dname":"SALES","locationid":101} 
+},
+{ _id:8,"empno" :7876, "ename" : "ADAMS", "job" : "Clerk", "mgr" : 7839,"doj": "02-FEB-81", "sal" : 1600, "comm" :350, "skill":["MS Excel"],
+dept:{"dname":"RESEARCH","locationid":201}
+},
+{ _id:9,"empno" : 7900,"ename":"JAMES","job" :"CLERK", "mgr": 7698,"doj": "20-DEC-81", "sal" : 1400,"comm" :100,"skill":["MS Word"],dept:{"dname":"ACCOUNTING","locationid":201} 
+},
+{ _id:10,"empno" : 7654, "ename" : "MARTIN", "job" :"SALESMAN", "mgr" : 7698,"doj": "19-SEP-80","skill":["MS Word","MS Excel"], "sal" : 1700, "comm" :100, dept:{"dname":"SALES","locationid":301} 
+},
+
+{ _id:11,"empno" : 7499, "ename" : "ALLEN", "job" :"SALESMAN", "mgr" : 7698,"doj": "20-FEB-81", "skill":["MS Power Point"],"sal" : 2100, "comm" :150, 
+dept:{"dname":"SALES","locationid":301} 
+},
+
+{ _id:12,"empno" : 7934, "ename" : "MILLER", "job" :"CLERK", "mgr" : 7844, "doj": "05-JAN-82", "skill":["MS Word"],"sal" : 1800, "comm" :150, dept:{"dname":"OPERATIONS","locationid":401 }
+}
+]
+)

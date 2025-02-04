@@ -1,0 +1,22 @@
+1. find total no of products for each category
+
+db.products_catalog.aggregate([ { $group: { _id: {category: "$categories.main", subcategory: "$categories.sub" }, totalNoOfProducts: { $sum: 1 }  } } ])
+
+2. display the maximum price for each category
+
+db.products_catalog.aggregate([ { $group: { _id: "$categories.main", maxcategoryprice: { $max: "$price" } } } ]
+
+3. display the total no of product is available
+
+db.products_catalog.aggregate([ { $group: { _id:  null, totalNoOfProducts: { $sum: 1 } } }, { $project: { _id: 0 } } ])
+
+
+4. find total no of products for each category and sub-category
+
+db.products_catalog.aggregate([ { $group: { _id: {category: "$categories.main", subcategory: "$categories.sub" }, totalNoOfProducts: { $sum: 1 }  } } ])
+
+
+5. Display the minimum price for each category and sub-category
+
+db.products_catalog.aggregate([ { $group: { _id: {category: "$categories.main", subcategory: "$categories.sub" }, totalNoOfProducts: { $min: "$price" }  } } ])
+
