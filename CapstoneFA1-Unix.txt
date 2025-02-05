@@ -1,0 +1,173 @@
+1. Write a command to extract Food Name and their Price, in descending order based on Food ID and display the last 2 records as output.
+
+cat Food.txt | sort -rt ',' -k1 | tail -n 2 | cut -d ',' -f2,4
+
+---------------------------------------------------
+
+2. Write a command to extract and display food names and their price in increasing order of price.
+
+cat Food.txt | sort -nt ',' -k4 | cut -d ',' -f2,4
+
+---------------------------------------------------
+
+3. Display the first 3 records of Order details sorted by the quantity in descending order.
+
+cat 'Order details.txt' | sort -nr -t ',' -k5 | head -n 3
+
+---------------------------------------------------
+
+4. Display the last 2 lines of hotel details sorted by the location.
+
+cat Hotel.txt | sort -t ',' -k3 | tail -n 2
+
+---------------------------------------------------
+
+5. Display the top 2 most expensive (highest price) food items from Food, along with their category, sorted by price.
+
+cat Food.txt | sort -nr -t ',' -k4 | head -n 2
+
+---------------------------------------------------
+
+6. Find the hotel names and locations of the hotels that have 'bhavan' in their name.
+
+cat Hotel.txt | cut -d ',' -f2,3 | grep -i 'bhavan'
+
+---------------------------------------------------
+
+7. Display the Food Name and Price of the food items that have price greater than 400.
+
+Command
+cut -d ',' -f2,4 Food.txt | grep -E ',(4([0-9][1-9]|[1-9][0-9])|[5-9][0-9]{2})'
+'or'
+cut -d ',' -f2,4 Food.txt | grep -v '400' | grep -E '[4-9][0-9]{2}'
+'or'
+cut -d ',' -f2,4 Food.txt | grep -vE '(400|[0-3][0-9]{2})'
+
+echo "300" | grep -vwE '(400|[0-3][0-9]{2})'
+Script
+#!/bin/bash
+
+file="Food.txt"
+
+if [ ! -e "$file" ]; then
+        echo "File does not exist."
+else
+        if [ ! -f "$file" ]; then
+                echo "File does not exist."
+        else
+                while IFS=',' read -r foodId foodName category price; do
+                        price=$(echo "$price" | tr -d [:space:] )
+                        if (( price > 400 )); then
+                                echo "$foodName,$price"
+                        fi
+                done < "$file"
+        fi
+fi
+
+---------------------------------------------------
+
+8. Find the number of orders placed for each hotel.
+
+cat 'Order details.txt' | cut -d ',' -f 3 | uniq -c
+
+---------------------------------------------------
+
+9. Print the hotel names and locations where the location contains the substring "gal".
+
+grep -f <(cut -d ',' -f3 Hotel.txt | grep 'gal') Hotel.txt
+
+---------------------------------------------------
+
+10. List food items that are categorized as 'Starters' and priced less than 600.
+
+cat Food.txt | grep 'Starters' | grep -wE '[0-5][0-9]{2}'
+
+---------------------------------------------------
+
+11. Write a shell script to calculate the total revenue for each food item (assuming all quantities are sold).
+
+#!/bin/bash
+
+file1="Food.txt"
+file2="Order details.txt"
+if [ ! -f "$file1" -o ! -f "$file2" ]; then
+        echo "File does not exist."
+else
+
+        while IFS=',' read -r fId1 foodName category price; do
+                totalfoodprice=0
+                while IFS=',' read -r oId fId2 hId deId quantity; do
+                        if [ "$fId1" = "$fId2" ]; then
+                                totalfoodprice=$(( price * quantity))
+                        fi
+                done < "$file2"
+                echo "$foodName: $totalfoodprice"
+        done < "$file1"
+
+fi
+
+---------------------------------------------------
+
+12. Find the average price of food items in each category.
+
+#!/bin/bash
+
+file1="Food.txt"
+
+touch pp
+
+while IFS=',' read -r fId1 fName1 category1 price1; do
+
+        sum=0
+        count=0
+
+        while IFS=',' read -r fId2 fName2 category2 price2; do
+                if [ "$category1" = "$category2" ]; then
+                        sum=$(( sum + price2 ))
+                        (( count++ ))
+                fi
+        done < "$file1"
+
+        averagePerCategory=$(( sum / count ))
+
+        echo "$category1: $averagePerCategory" >> pp
+
+done < "$file1"
+
+cat pp | sort | uniq
+rm -rf pp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,157 @@
+db.hotel.insertMany([ 
+    { "hotelId": "H101", "hotelname": "Rasooyi Restaurant", "location": "Hebbal" }, 
+    { "hotelId": "H102", "hotelname": "Hanchan bhavan", "location": "Gokulam" }, 
+    { "hotelId": "H103", "hotelname": "Krupa Restaurant", "location": "Hootagalli" }, 
+    { "hotelId": "H104", "hotelname": "Mezalona Restaurant", "location": "Hebbal" }, 
+    { "hotelId": "H105", "hotelname": "AAB Restaurant", "location": "Kollegala" }, 
+    { "hotelId": "H106", "hotelname": "Armani Biriyani", "location": "Hasanur" }, 
+    { "hotelId": "H107", "hotelname": "Anbu bhavan", "location": "Metagalli" }, 
+    { "hotelId": "H108", "hotelname": "Vishnu bhavan", "location": "Bhogadi" }, 
+    { "hotelId": "H109", "hotelname": "Krishna bhavan", "location": "Nandana" }, 
+    { "hotelId": "H110", "hotelname": "Empire Restaurant", "location": "Hasanur" }
+])
+
+
+db.food.insertMany([
+    {
+        "foodId": "F101",
+        "foodName": "Grilled Chicken",
+        "category": "Starters",
+        "price": 660
+    },
+    {
+        "foodId": "F102",
+        "foodName": "Chicken Biryani",
+        "category": "Main course",
+        "price": 600
+    },
+    {
+        "foodId": "F103",
+        "foodName": "VegManchow",
+        "category": "Soup",
+        "price": 300
+    },
+    {
+        "foodId": "F104",
+        "foodName": "Chicken manchurian",
+        "category": "Starters",
+        "price": 300
+    },
+    {
+        "foodId": "F105",
+        "foodName": "Chicken noodles",
+        "category": "Main course",
+        "price": 450
+    },
+    {
+        "foodId": "F106",
+        "foodName": "strawberry ice cream",
+        "category": "Dessert",
+        "price": 240
+    },
+    {
+        "foodId": "F107",
+        "foodName": "Milkshake",
+        "category": "Dessert",
+        "price": 350
+    },
+    {
+        "foodId": "F108",
+        "foodName": "Egg Bhurji",
+        "category": "Main course",
+        "price": 240
+    },
+    {
+        "foodId": "F109",
+        "foodName": "Chicken kabab",
+        "category": "Starters",
+        "price": 500
+    },
+    {
+        "foodId": "F110",
+        "foodName": "Kadai paneer",
+        "category": "Main course",
+        "price": 400
+    }
+])
+
+db.orderdetails.insertMany([ 
+    { "orderId": "1456901", "foodId": "F101", "hotelId": "H106", "deliveryExecutiveId": "E106", "quantity": 2 }, 
+    { "orderId": "1456902", "foodId": "F102", "hotelId": "H105", "deliveryExecutiveId": "E105", "quantity": 4 }, 
+    { "orderId": "1456903", "foodId": "F103", "hotelId": "H104", "deliveryExecutiveId": "E104", "quantity": 3 }, 
+    { "orderId": "1456904", "foodId": "F104", "hotelId": "H103", "deliveryExecutiveId": "E103", "quantity": 2 }, 
+    { "orderId": "1456905", "foodId": "F105", "hotelId": "H102", "deliveryExecutiveId": "E102", "quantity": 3 }, 
+    { "orderId": "1456906", "foodId": "F106", "hotelId": "H101", "deliveryExecutiveId": "E101", "quantity": 3 }, 
+    { "orderId": "1456907", "foodId": "F107", "hotelId": "H107", "deliveryExecutiveId": "E107", "quantity": 5 }, 
+    { "orderId": "1456908", "foodId": "F108", "hotelId": "H108", "deliveryExecutiveId": "E108", "quantity": 3 }, 
+    { "orderId": "1456909", "foodId": "F109", "hotelId": "H109", "deliveryExecutiveId": "E109", "quantity": 5 }, 
+    { "orderId": "1456910", "foodId": "F110", "hotelId": "H110", "deliveryExecutiveId": "E110", "quantity": 4 }
+])
+
+
+1. Find the hotels in the location Hebbal.
+
+db.hotel.find({ location: "Hebbal" })
+
+
+2. List all the hotel names.
+db.hotel.find({}, { _id: 0, hotelname: 1 })
+
+
+3. Find all hotels whose names contains 'Bhavan'
+db.hotel.find({ hotelname: /Bhavan/i })
+
+
+4. Find the number of hotels in each location
+db.hotel.aggregate([
+	{ $group: { _id: '$location',NoofHotels: { $count: {} } } },
+  	{ $project: { _id: 0, Location: "$_id", NoofHotels: 1 } }
+])
+
+
+5. Find the top 3 locations with the most hotels.
+db.hotel.aggregate([
+	{ $group: { _id: '$location',NoofHotels: { $count: {} } } },
+	{ $sort: { NoofHotels: -1 } },
+	{ $limit: 3 },
+  	{ $project: { _id: 0, Location: "$_id", NoofHotels: 1 } }
+])
+
+
+6. Find a specific order by OrderID, eg - 1456903.
+db.orderdetails.find({ orderId: '1456903' })
+
+
+7. Find all orders with quantity greater than 2.
+db.orderdetails.find({ quantity: { $gt: 2 } })
+
+
+8. Find all orders placed for F101 and delivered by executive E106.
+db.orderdetails.find({ $and: [ { foodId: 'F101' }, { deliveryExecutiveId: 'E106' } ] })
+
+
+9. Calculate the total quantity of each food items ordered.
+db.orderdetails.aggregate([
+	{ $group: { _id: "$foodId", totalQuantity: { $sum: "$quantity" } } },
+	{ $project: { _id: 0, totalQuantity: 0, FoodID: "$_id",  } }
+])
+
+
+10. Calculate the total number of orders delivered by each executive.
+db.orderdetails.aggregate([
+	{ $group: { _id: "$deliveryExecutiveId", NoofOrders: { $count: {} } } },
+  	{ $project: { _id: 0, DeliveryExecutiveId: "$_id", NoofOrders: 1 } }
+])
+
+
+11. Find the average price of food items in each category.
+db.food.aggregate([
+	{ $group: { _id: "$category", AveragePrice: { $avg: "$price" } } },
+  	{ $project: { _id: 0, Category: "$_id", AveragePrice: 1 } }
+])
+
+
+12. Find all food items in the 'Main Course' category with a price greater than 400.
+db.food.find({ category: 'Main course', price: { $gt: 400 } })
+
+

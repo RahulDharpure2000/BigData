@@ -1,0 +1,189 @@
+Core:
+
+1. Write a program to find and display the total price of Main course category of foods which that company sold through all its partners.
+
+FoodData = sc.textFile("Food.txt")
+OrdersData = sc.textFile("Order details.txt")
+
+FoodRdd = FoodData.map(lambda line: line.split(',')).filter(lambda s: s[2] == 'Main course').map(lambda r: (r[0], (r[0],r[1],r[2],int(r[3]))))
+
+OrdersRdd = OrdersData.map(lambda line: line.split(',')).map(lambda s: (s[1], (s[0],s[1],s[2],s[3],int(s[4]))))
+
+FoodOrdersJoinRdd = FoodRdd.join(OrdersRdd)
+
+MaincourseRdd = FoodOrdersJoinRdd.map(lambda r: (r[1][0][2], r[1][0][3]*r[1][1][4]))
+
+OutputRdd = MaincourseRdd.reduceByKey(lambda a,b: a + b)
+
+for i in OutputRdd.collect():
+	print(i)
+
+
+
+
+2. Write a program to find how many hotel names ending with bhavan
+
+HotelsData = sc.textFile('Hotel.txt')
+EndingWithRdd = HotelsData.map(lambda l: l.split(',')).filter(lambda s: s[1].endswith('bhavan'))
+
+for i in EndingWithRdd.collect():
+	print('{},{},{}'.format(i[0],i[1],i[2]))
+
+
+
+3. Write a program to Print all hotel names and locations sorted by hotel name
+
+HotelsData = sc.textFile('Hotel.txt')
+HotelsRdd = HotelsData.map(lambda line: line.split(',')).map(lambda s: (s[1],s[2]))
+SortedRdd = HotelsRdd.sortByKey()
+for record in SortedRdd.collect():
+	print('{},{}'.format(record[0],record[1]))
+
+
+4. Find the most expensive food item and its category
+
+FoodsData = sc.textFile("Food.txt")
+
+MaxPriceFoodRdd = FoodsData.map(lambda l: l.split(',')).map(lambda s: (s[1],s[2],int(s[3]))).max(lambda x: x[2])
+
+print('{},{}'.format(MaxPriceFoodRdd[0],MaxPriceFoodRdd[1]))
+
+
+
+
+SQL
+
+1. Write a program to display Food Name whose category repeated less than 2.
+
+FoodsData = sc.textFile("Food.txt")
+
+FoodDF = FoodsData.map(lambda l: l.split(',')).toDF(['FoodId','FoodName','Category','Price'])
+
+FoodDF.createOrReplaceTempView('Food')
+
+records = spark.sql("""
+	SELECT FoodName FROM Food
+	WHERE Category IN (
+		SELECT Category FROM Food
+		GROUP BY Category
+		HAVING COUNT(Category) < 2
+	)
+""")
+
+records.show()
+
+
+2. Write a program to display Category, Number of food items in each category and total quantity sold in each category in ascending order of the quantity.
+
+FoodsData = sc.textFile("Food.txt")
+OrdersData = sc.textFile("Order details.txt")
+
+FoodDF = FoodsData.map(lambda l: l.split(',')).map(lambda r: (r[0],r[1],r[2],int(r[3]))).toDF(['FoodId','FoodName','Category','Price'])
+OrderDF = OrdersData.map(lambda l: l.split(',')).map(lambda r: (r[0],r[1],r[2],r[3],int(r[4]))).toDF(['OrderId','FoodId','HotelId','DeliveryId','Quantity'])
+
+FoodDF.createOrReplaceTempView('Food')
+OrderDF.createOrReplaceTempView('Order')
+
+records = spark.sql("""
+	SELECT CATEGORY, COUNT(FoodName), SUM(O.Quantity) 
+	FROM Food F INNER JOIN Order O
+	ON F.FoodId = O.FoodId
+	GROUP BY CATEGORY
+	ORDER BY SUM(O.Quantity)
+""")
+
+records.show()
+
+
+3. Find food items that are ordered more than 2 times.
+
+from collections import namedtuple
+
+Food = namedtuple('Food',['foodid','foodname','category','price'])
+Order = namedtuple('Order',['orderid','foodid','hotelid','deliveryid','quantity'])
+
+FoodDF = sc.textFile("Food.txt").map(lambda line: line.split(',')).map(lambda r: Food(r[0],r[1],r[2],int(r[3]))).toDF()
+OrderDF = sc.textFile("Order details.txt").map(lambda line: line.split(',')).map(lambda r: Order(r[0],r[1],r[2],r[3],int(r[4]))).toDF()
+
+FoodDF.createOrReplaceTempView('FOOD')
+OrderDF.createOrReplaceTempView('ORDER')
+
+records = spark.sql("""
+	SELECT FOODNAME
+	FROM FOOD F INNER JOIN ORDER O
+	ON F.FOODID = O.FOODID
+	GROUP BY O.FOODID,FOODNAME
+	HAVING COUNT(O.ORDERID) > 2
+""")
+
+records.show()
+
+
+
+4. Find the total number of orders placed for each hotel
+
+from collections import namedtuple
+
+Hotel = namedtuple('Hotel',['hotelid','hotelname','location'])
+Order = namedtuple('Order',['orderid','foodid','hotelid','deliveryid','quantity'])
+
+HotelDF = sc.textFile('Hotel.txt').map(lambda line: line.split(',')).map(lambda r: (r[0],r[1],r[2])).toDF()
+
+OrderDF = sc.textFile("Order details.txt").map(lambda line: line.split(',')).map(lambda r: (r[0],r[1],r[2],r[3],int(r[4]))).toDF()
+
+HotelDF.createOrReplaceTempView('Hotel')
+OrderDF.createOrReplaceTempView('Order')
+
+records = spark.sql("""
+	SELECT O.HOTELID, COUNT(O.ORDERID) AS TOTAL_ORDERS
+	FROM ORDER O INNER JOIN HOTEL H
+	ON O.HOTELID = H.HOTELID
+	GROUP BY O.HOTELID
+""")
+
+records.show()
+
+DataFrame
+
+1. List all orders with order ID, food name, hotel name and quantity
+
+from collections import namedtuple
+
+Hotel = namedtuple('Hotel',['hotelid','hotelname','location'])
+Food = namedtuple('Food',['foodid','foodname','category','price'])
+Order = namedtuple('Order',['orderid','foodid','hotelid','deliveryid','quantity'])
+
+HotelDF = sc.textFile('Hotel.txt').map(lambda line: line.split(',')).map(lambda r: Hotel(r[0],r[1],r[2])).toDF()
+OrderDF = sc.textFile("Order details.txt").map(lambda line: line.split(',')).map(lambda r: Order(r[0],r[1],r[2],r[3],int(r[4]))).toDF()
+FoodDF = sc.textFile("Food.txt").map(lambda line: line.split(',')).map(lambda r: Food(r[0],r[1],r[2],int(r[3]))).toDF()
+
+JoinedDFs = OrderDF.join(HotelDF,OrderDF.hotelid==HotelDF.hotelid).join(FoodDF,OrderDF.foodid==FoodDF.foodid)
+
+JoinedDFs.select('orderid','foodname','hotelname','quantity').show()
+
+
+2. List all food items categorized as "Starters" with their prices
+
+Food = namedtuple('Food',['foodid','foodname','category','price'])
+
+FoodDF = sc.textFile("Food.txt").map(lambda line: line.split(',')).map(lambda r: Food(r[0],r[1],r[2],int(r[3]))).toDF()
+
+FoodDF.select('foodname','price').filter(col("category") == "Starters").show()
+
+
+3. Find the hotel with the highest number of orders
+
+
+
+4. Find the average price of food items in each category.
+
+import pyspark
+from pyspark.sql.functions import *
+from collections import namedtuple
+
+
+Food = namedtuple('Food',['foodid','foodname','category','price'])
+
+FoodDF = sc.textFile("Food.txt").map(lambda line: line.split(',')).map(lambda r: Food(r[0],r[1],r[2],int(r[3]))).toDF()
+
+FoodDF.groupBy("category").agg(round(avg("price"), 2).alias("AveragePrice")).show()
